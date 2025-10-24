@@ -1,0 +1,14 @@
+- name: Install Docker on all nodes
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ docker_user }}"
+        groups: docker
+        append: yes
+        state: present

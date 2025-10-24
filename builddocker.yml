@@ -1,0 +1,26 @@
+---
+- name: Build and run Docker container for web + DB
+  hosts: all
+  become: true
+  
+  tasks:
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+    
+    - name: Build Docker image from the Dockerfile
+      community.docker.docker_image:
+        name: web_db_image
+        build:
+          path: "{{ playbook_dir }}"
+        source: build
+    
+    - name: Run Docker container
+      community.docker.docker_container:
+        name: web_db_container
+        image: web_db_image
+        ports:
+          - "80:80"
+          - "3306:3306"
